@@ -24,7 +24,7 @@ export default function Navbar() {
     <header style={{ background: '#085041' }} className="sticky top-0 z-40 shadow-md">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="CoopGest Togo" width={32} height={32} className="rounded-md" />
+          <Image src="/logo.png" alt="CoopGest Togo" width={28} height={28} className="rounded-md" />
           <div>
             <span className="font-bold text-white text-sm">CoopGest</span>
             <span style={{ color: '#EF9F27' }} className="font-bold text-sm"> Togo</span>
