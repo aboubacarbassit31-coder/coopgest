@@ -20,36 +20,43 @@ export default function Navbar() {
   }
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header style={{ background: '#085041' }} className="sticky top-0 z-40 shadow-md">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-emerald-600 rounded-md flex items-center justify-center">
+          <div style={{ background: '#EF9F27' }} className="w-7 h-7 rounded-md flex items-center justify-center">
             <span className="text-white text-xs font-bold">C</span>
           </div>
-          <span className="font-semibold text-gray-900 text-sm">CoopGest</span>
+          <div>
+            <span className="font-bold text-white text-sm">CoopGest</span>
+            <span style={{ color: '#EF9F27' }} className="font-bold text-sm"> Togo</span>
+          </div>
         </div>
         <nav className="hidden sm:flex items-center gap-1">
           {LIENS.map(lien => (
             <Link key={lien.href} href={lien.href}
-              className={`px-3 py-1.5 rounded-lg text-sm transition-colors
-                ${pathname === lien.href
-                  ? 'bg-emerald-50 text-emerald-700 font-medium'
-                  : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'}`}>
+              className="px-3 py-1.5 rounded-lg text-sm transition-colors"
+              style={{
+                background: pathname === lien.href ? '#EF9F27' : 'transparent',
+                color: pathname === lien.href ? '#fff' : '#A8D8C8',
+                fontWeight: pathname === lien.href ? 600 : 400,
+              }}>
               {lien.label}
             </Link>
           ))}
         </nav>
-        <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-gray-700">
+        <button onClick={handleLogout} className="text-sm transition-colors" style={{ color: '#A8D8C8' }}>
           Déconnexion
         </button>
       </div>
-      <div className="sm:hidden border-t border-gray-100 flex overflow-x-auto">
+      <div className="sm:hidden border-t flex overflow-x-auto" style={{ borderColor: '#1D9E75' }}>
         {LIENS.map(lien => (
           <Link key={lien.href} href={lien.href}
-            className={`flex-1 text-center py-2 text-xs whitespace-nowrap transition-colors
-              ${pathname === lien.href
-                ? 'text-emerald-700 font-medium border-b-2 border-emerald-600'
-                : 'text-gray-500'}`}>
+            className="flex-1 text-center py-2 text-xs whitespace-nowrap transition-colors"
+            style={{
+              color: pathname === lien.href ? '#EF9F27' : '#A8D8C8',
+              fontWeight: pathname === lien.href ? 600 : 400,
+              borderBottom: pathname === lien.href ? '2px solid #EF9F27' : 'none',
+            }}>
             {lien.label}
           </Link>
         ))}

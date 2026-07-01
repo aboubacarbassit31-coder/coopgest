@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'CoopGest',
+  title: 'CoopGest Togo',
   description: 'Gestion numérique des coopératives agricoles togolaises',
 }
 
