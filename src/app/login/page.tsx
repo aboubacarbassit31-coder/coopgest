@@ -33,7 +33,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
          
-          <img src="/logo.png"alt="Coopgest Togo" width={80} className="rounded-2xl object-contain mx-auto"/>
+          <img src="/logo.png"alt="Coopgest Togo" width={120} height={120} className="rounded-2xl object-contain mx-auto"/>
           <h1 className="text-2xl font-bold text-white">
             CoopGest <span style={{ color: '#EF9F27' }}>Togo</span>
           </h1>
