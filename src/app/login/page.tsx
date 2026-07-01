@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('')
@@ -31,9 +32,8 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: '#EF9F27' }}>
-            <span className="text-white text-2xl font-bold">C</span>
-          </div>
+         
+          <img src="/logo.png"alt="Coopgest Togo" width={80} className="rounded-2xl object-contain mx-auto"/>
           <h1 className="text-2xl font-bold text-white">
             CoopGest <span style={{ color: '#EF9F27' }}>Togo</span>
           </h1>
