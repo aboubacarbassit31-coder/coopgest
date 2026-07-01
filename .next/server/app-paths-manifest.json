@@ -1,5 +1,9 @@
 {
-  "/membres/page": "app/membres/page.js",
+  "/_not-found": "app/_not-found.js",
+  "/cotisations/page": "app/cotisations/page.js",
   "/credits/page": "app/credits/page.js",
+  "/login/page": "app/login/page.js",
+  "/membres/page": "app/membres/page.js",
+  "/page": "app/page.js",
   "/recoltes/page": "app/recoltes/page.js"
 }

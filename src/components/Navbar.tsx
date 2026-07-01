@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -23,9 +24,7 @@ export default function Navbar() {
     <header style={{ background: '#085041' }} className="sticky top-0 z-40 shadow-md">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <div className="flex items-center gap-2">
-          <div style={{ background: '#EF9F27' }} className="w-7 h-7 rounded-md flex items-center justify-center">
-            <span className="text-white text-xs font-bold">C</span>
-          </div>
+          <Image src="/logo.png" alt="CoopGest Togo" width={32} height={32} className="rounded-md" />
           <div>
             <span className="font-bold text-white text-sm">CoopGest</span>
             <span style={{ color: '#EF9F27' }} className="font-bold text-sm"> Togo</span>
