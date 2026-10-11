@@ -10,43 +10,61 @@ import {
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [stats, setStats] = useState({
     totalMembres: 0, membresActifs: 0,
     totalCotisations: 0, cotisationsEnRetard: 0,
     totalRecoltes: 0, valeurRecoltes: 0,
     totalCredits: 0, creditsEnRetard: 0,
+    totalCooperatives: 0,
   })
   const [alertes, setAlertes] = useState<any[]>([])
   const [cotisationsParMois, setCotisationsParMois] = useState<any[]>([])
   const [recoltesParSaison, setRecoltesParSaison] = useState<any[]>([])
   const router = useRouter()
 
-  useEffect(() => { checkAuthEtCharger() }, [])
+  useEffect(() => { checkAdmin() }, [])
 
-  async function checkAuthEtCharger() {
+  async function checkAdmin() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
-    await fetchStats(user.id)
+
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+
+    if (!admin) {
+      router.push('/membres')
+      return
+    }
+
+    setIsAdmin(true)
+    await fetchStats()
     setLoading(false)
   }
 
-  async function fetchStats(userId: string) {
+  async function fetchStats() {
     const [
       { data: membres },
       { data: cotisations },
       { data: recoltes },
       { data: credits },
+      { data: users },
     ] = await Promise.all([
-      supabase.from('membres').select('*').eq('user_id', userId),
-      supabase.from('cotisations').select('*').eq('user_id', userId),
-      supabase.from('recoltes').select('*').eq('user_id', userId),
-      supabase.from('credits').select('*').eq('user_id', userId),
+      supabase.from('membres').select('*'),
+      supabase.from('cotisations').select('*'),
+      supabase.from('recoltes').select('*'),
+      supabase.from('credits').select('*'),
+      supabase.from('membres').select('user_id').limit(1000),
     ])
 
     const m = membres || []
     const c = cotisations || []
     const r = recoltes || []
     const cr = credits || []
+    const uniqueCoops = new Set((users || []).map((u: any) => u.user_id)).size
 
     setStats({
       totalMembres: m.length,
@@ -57,6 +75,7 @@ export default function DashboardPage() {
       valeurRecoltes: r.reduce((s: number, x: any) => s + x.quantite_kg * x.prix_unitaire, 0),
       totalCredits: cr.reduce((s: number, x: any) => s + x.montant, 0),
       creditsEnRetard: cr.filter((x: any) => x.statut !== 'rembourse' && new Date(x.date_echeance) < new Date()).length,
+      totalCooperatives: uniqueCoops,
     })
 
     const alertesList: any[] = []
@@ -87,8 +106,11 @@ export default function DashboardPage() {
     </>
   )
 
+  if (!isAdmin) return null
+
   const STATS = [
-    { label: 'Membres actifs', val: `${stats.membresActifs}/${stats.totalMembres}`, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+    { label: 'Coopératives actives', val: stats.totalCooperatives, color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-200' },
+    { label: 'Membres total', val: `${stats.membresActifs}/${stats.totalMembres}`, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
     { label: 'Cotisations collectées', val: `${stats.totalCotisations.toLocaleString()} FCFA`, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
     { label: 'Récoltes totales', val: `${stats.totalRecoltes.toLocaleString()} kg`, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
     { label: 'Valeur récoltes', val: `${stats.valeurRecoltes.toLocaleString()} FCFA`, color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-200' },
@@ -100,9 +122,14 @@ export default function DashboardPage() {
     <>
       <Navbar />
       <main className="max-w-5xl mx-auto px-4 py-6">
-        <div className="mb-6">
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Vue d'ensemble</p>
-          <h1 className="text-2xl font-semibold text-gray-900">Tableau de bord</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Administration</p>
+            <h1 className="text-2xl font-semibold text-gray-900">Tableau de bord</h1>
+          </div>
+          <span className="bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-200">
+            🔐 Accès Admin
+          </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
@@ -174,14 +201,14 @@ export default function DashboardPage() {
               <p className="text-xs text-gray-500 mt-1">FCFA accordés</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-emerald-600">{stats.creditsEnRetard === 0 ? '✓' : stats.creditsEnRetard}</p>
-              <p className="text-xs text-gray-500 mt-1">{stats.creditsEnRetard === 0 ? 'Tout à jour' : 'En retard'}</p>
+              <p className={`text-xl font-bold ${stats.creditsEnRetard > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                {stats.creditsEnRetard > 0 ? stats.creditsEnRetard : '✓'}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">{stats.creditsEnRetard > 0 ? 'En retard' : 'Tout à jour'}</p>
             </div>
             <div>
-              <p className={`text-xl font-bold ${stats.creditsEnRetard > 0 ? 'text-red-600' : 'text-gray-400'}`}>
-                {stats.creditsEnRetard}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Crédits en retard</p>
+              <p className="text-xl font-bold text-gray-900">{stats.totalCooperatives}</p>
+              <p className="text-xs text-gray-500 mt-1">Coopératives</p>
             </div>
           </div>
         </div>
