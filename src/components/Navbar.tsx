@@ -1,10 +1,11 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 
 const LIENS = [
+  { href: '/dashboard',   label: 'Dashboard' },
   { href: '/membres',     label: 'Membres' },
   { href: '/cotisations', label: 'Cotisations' },
   { href: '/recoltes',    label: 'Récoltes' },
@@ -24,7 +25,7 @@ export default function Navbar() {
     <header style={{ background: '#085041' }} className="sticky top-0 z-40 shadow-md">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="CoopGest Togo" width={28} height={28} className="rounded-md" />
+          <Image src="/logo.png" alt="CoopGest Togo" width={28} height={28} className="rounded-md object-contain" />
           <div>
             <span className="font-bold text-white text-sm">CoopGest</span>
             <span style={{ color: '#EF9F27' }} className="font-bold text-sm"> Togo</span>
